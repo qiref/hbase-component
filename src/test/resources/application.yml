@@ -1,0 +1,9 @@
+# HBase配置
+HBase:
+  conf:
+    quorum: 192.168.64.120:2181,192.168.64.121:2181,192.168.64.122:2181
+    znodeParent: /hbase
+        #如果有更多配置，写在config下，例如：
+        #config:
+        #  key: value
+        #  key: value
