@@ -1,6 +1,6 @@
-package com.semptian.hbase.component.assertion;
+package com.yaoqi.hbase.component.assertion;
 
-import com.semptian.hbase.component.constant.ExceptionMessage;
+import com.yaoqi.hbase.component.constant.ExceptionMessage;
 import org.springframework.util.StringUtils;
 
 /**

@@ -1,9 +1,17 @@
 # HBase配置
 HBase:
   conf:
-    quorum: 192.168.64.120:2181,192.168.64.121:2181,192.168.64.122:2181
+    quorum: 192.168.80.66:2181,192.168.80.10:2181,192.168.80.86:2181
     znodeParent: /hbase
-        #如果有更多配置，写在config下，例如：
-        #config:
-        #  key: value
-        #  key: value
+    config:
+      #keytab地址路径
+      user-keytab: D:\java\work\auth\hbase\test-hbase-kb\root.keytab
+      #如果使用kb认证请写以下kerberos否则不用写
+      authMethod: kerberos
+      #master.kerberos.principal
+      masterPrincipal: root/hadoop-beta-01@SEMPTIAN.COM
+      #regionserver.kerberos.principal regionserverPrincipal/hbaseSitePath 二选一,一些环境下使用hbaseSitePath更简单
+      #regionserverPrincipal: root/_HOST@SEMPTIAN.COM
+      #hbseSite配置文件路径D:\kerberos\hbase-kb\hbase-site.xml
+      hbaseSitePath: D:\java\work\auth\hbase\test-hbase-kb\hbase-site.xml
+      #coreSitePath: D:\kerberos\dev-hbase-kb\core-site.xml

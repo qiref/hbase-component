@@ -1,7 +1,8 @@
-package com.semptian.hbase.component.operations;
+package com.yaoqi.hbase.component.operations;
 
 import org.apache.hadoop.hbase.client.*;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -12,6 +13,7 @@ import java.util.List;
  */
 public interface HBaseOperations {
 
+
     /**
      * 创建一张表
      *
@@ -19,6 +21,15 @@ public interface HBaseOperations {
      * @param familyName 列族名
      */
     void createTable(final String tableName, final String... familyName);
+
+    /**
+     * 创建带有分区的表
+     *
+     * @param tableName
+     * @param familyName
+     * @param splitkeys
+     */
+    void createTable(String tableName, List<String> familyName, byte[][] splitkeys);
 
     /**
      * 通过表名和rowKey获取数据
@@ -107,4 +118,37 @@ public interface HBaseOperations {
      * @param tableName 表名
      */
     void dropTable(String tableName);
+
+    /**
+     * 批量删除表
+     *
+     * @param tableNames
+     */
+    void dropTable(List<String> tableNames);
+
+    /**
+     * 清空表数据
+     *
+     * @param tableName
+     */
+    void truncateTable(String tableName) throws IOException;
+
+    /**
+     * 删除指定行指定列
+     * @param tableName
+     * @param family
+     * @param rowKey
+     * @param column
+     * @return
+     * @throws IOException
+     */
+    boolean deleteColumn(String tableName, String family, String rowKey, String column) throws IOException;
+
+    /**
+     * 删除列簇下的某一列
+     *
+     * @param tableName
+     * @param family
+     */
+    boolean deleteColumn(String tableName, String family, String rowKey, List<String> columns) throws IOException;
 }

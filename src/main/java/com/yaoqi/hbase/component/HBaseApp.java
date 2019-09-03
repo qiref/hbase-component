@@ -1,4 +1,4 @@
-package com.semptian.hbase.component;
+package com.yaoqi.hbase.component;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,7 +1,7 @@
-package com.semptian.hbase.component.template;
+package com.yaoqi.hbase.component.template;
 
-import com.semptian.hbase.component.HBaseApp;
-import com.semptian.hbase.component.operations.HBaseOperations;
+import com.yaoqi.hbase.component.HBaseApp;
+import com.yaoqi.hbase.component.operations.HBaseOperations;
 import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.filter.*;

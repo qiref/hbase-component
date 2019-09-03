@@ -1,4 +1,4 @@
-package com.semptian.hbase.component.assertion;
+package com.yaoqi.hbase.component.assertion;
 
 import org.junit.Test;
 

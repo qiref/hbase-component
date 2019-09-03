@@ -1,4 +1,4 @@
-package com.semptian.hbase.component.constant;
+package com.yaoqi.hbase.component.constant;
 
 /**
  * @Author YaoQi
