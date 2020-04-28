@@ -40,6 +40,38 @@ HBase:
 
 quorum是HBase中zookeeper的配置，znodeParent是HBase配置在zookeeper中的路径。
 
+带kerberos认证的配置如下：
+
+``` yml
+# HBase配置
+HBase:
+  conf:
+    quorum: 192.168.80.54:2181,192.168.80.62:2181,192.168.80.64:2181,192.168.80.78:2181,192.168.80.52:2181
+    znodeParent: /hbase-secure
+    config:
+      #keytab地址路径
+      user-keytab: D:\semptian\environment\security/hbase.service.keytab
+      #如果使用kb认证请写kerberos否则不用写
+      authMethod: kerberos
+      #master.kerberos.principal
+      masterPrincipal: hbase/node248@SEMPTIAN.COM
+      #regionserver.kerberos.principal regionserverPrincipal/hbaseSitePath 二选一,一些环境下使用hbaseSitePath更简单
+      #regionserverPrincipal: root/_HOST@SEMPTIAN.COM
+      #hbseSite配置文件路径D:\kerberos\hbase-kb\hbase-site.xml
+      hbaseSitePath: D:\semptian\environment\security/hbase-site.xml
+      #coreSitePath: D:\kerberos\dev-hbase-kb\core-site.xml
+      # 刷新认证周期，单位：小时
+      refreshAuth: 8
+```
+
+### 认证配置参数说明
+
+user-keytab 和 masterPrincipal 是对应的，一个对应用户的认证文件，一个对应用户。
+hbaseSitePath 是hbase-site.xml的文件路径。
+
+在jdk中会自动设置认证过期时间为24小时，所以在组件中需要对认证进行刷新，重新建立连接。refreshAuth 就是配置刷新认证的周期，一般小于24小时，
+建议12小时，因为重新建立连接需要消耗一些资源。
+
 ## 简单示例
 
 引入组件jar包：

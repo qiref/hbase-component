@@ -1,7 +1,7 @@
 package com.yaoqi.hbase.component.constant;
 
 /**
- * @author: YaoQi
+ * @author : YaoQi
  * Date: 2018/10/27 17:57
  * Modified:
  * Description:公共常量类

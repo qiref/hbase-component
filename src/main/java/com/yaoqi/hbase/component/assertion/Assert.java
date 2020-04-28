@@ -4,10 +4,10 @@ import com.yaoqi.hbase.component.constant.ExceptionMessage;
 import org.springframework.util.StringUtils;
 
 /**
- * @Author YaoQi
- * @Date 2018/8/13 17:00
- * @Modified
- * @Description 参数断言
+ * @author YaoQi
+ * Date 2018/8/13 17:00
+ * Modified
+ * Description 参数断言
  */
 public class Assert {
 
@@ -51,8 +51,8 @@ public class Assert {
      * @param objects 多个参数集合
      */
     public static void notNullBatch(Object... objects) {
-        for (int i = 0; i < objects.length; i++) {
-            notNull(objects[i]);
+        for (Object object : objects) {
+            notNull(object);
         }
     }
 }

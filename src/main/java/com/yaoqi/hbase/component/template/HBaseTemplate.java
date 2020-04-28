@@ -1,6 +1,7 @@
 package com.yaoqi.hbase.component.template;
 
 import com.yaoqi.hbase.component.assertion.Assert;
+import com.yaoqi.hbase.component.config.HBaseConfig;
 import com.yaoqi.hbase.component.constant.CommonConstant;
 import com.yaoqi.hbase.component.constant.ExceptionMessage;
 import com.yaoqi.hbase.component.operations.HBaseOperations;
@@ -20,10 +21,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @Author YaoQi
- * @Date 2018/8/13 14:05
- * @Modified
- * @Description
+ * @author YaoQi
+ * Date 2018HBaseApp/8/13 14:05
+ * Modified
+ * Description
  */
 @Component
 public class HBaseTemplate implements HBaseOperations {
@@ -31,7 +32,7 @@ public class HBaseTemplate implements HBaseOperations {
     private static final Logger logger = LoggerFactory.getLogger(HBaseTemplate.class);
 
     @Autowired
-    private Connection connection;
+    private HBaseConfig hBaseConfig;
 
     /**
      * 判断表名是否存在
@@ -43,6 +44,7 @@ public class HBaseTemplate implements HBaseOperations {
     public boolean tableExists(String tableName) {
         Table table = null;
         boolean tableExistsFlag = false;
+        Connection connection = hBaseConfig.getConnection();
         try (Admin admin = connection.getAdmin()) {
             table = connection.getTable(TableName.valueOf(tableName));
             tableExistsFlag = admin.tableExists(table.getName());
@@ -74,6 +76,7 @@ public class HBaseTemplate implements HBaseOperations {
         Result result = null;
         Table table = null;
         try {
+            Connection connection = hBaseConfig.getConnection();
             table = connection.getTable(TableName.valueOf(tableName));
             Get get = new Get(rowKey);
             result = table.get(get);
@@ -104,6 +107,7 @@ public class HBaseTemplate implements HBaseOperations {
         Table table = null;
         Result[] result = null;
         try {
+            Connection connection = hBaseConfig.getConnection();
             table = connection.getTable(TableName.valueOf(tableName));
             result = table.get(getList);
         } catch (IOException e) {
@@ -176,10 +180,10 @@ public class HBaseTemplate implements HBaseOperations {
      *
      * @param tableName
      * @param familyName
-     * @param splitkeys
+     * @param splitKeys
      */
     @Override
-    public void createTable(String tableName, List<String> familyName, byte[][] splitkeys) {
+    public void createTable(String tableName, List<String> familyName, byte[][] splitKeys) {
         Assert.notNullBatch(tableName, familyName);
         Assert.hasLength(tableName);
         TableName tableNameVar = TableName.valueOf(tableName);
@@ -191,13 +195,13 @@ public class HBaseTemplate implements HBaseOperations {
                 hColumnDescriptor.setPrefetchBlocksOnOpen(true);
                 hTableDescriptor.addFamily(hColumnDescriptor);
             }
+            Connection connection = hBaseConfig.getConnection();
             try (Admin admin = connection.getAdmin()) {
-                if (splitkeys != null) {
-                    admin.createTable(hTableDescriptor, splitkeys);
+                if (splitKeys != null) {
+                    admin.createTable(hTableDescriptor, splitKeys);
                 } else {
                     admin.createTable(hTableDescriptor);
                 }
-
             } catch (IOException e) {
                 logger.error("create failed , Exception: {}", e.getMessage());
             }
@@ -222,6 +226,7 @@ public class HBaseTemplate implements HBaseOperations {
         Table table = null;
         if (tableExists(tableName)) {
             try {
+                Connection connection = hBaseConfig.getConnection();
                 table = connection.getTable(TableName.valueOf(tableName));
                 Put put = new Put(Bytes.toBytes(rowName));
                 put.addColumn(Bytes.toBytes(familyName), Bytes.toBytes(qualifier), data);
@@ -243,7 +248,7 @@ public class HBaseTemplate implements HBaseOperations {
      * @param putList   put集合
      */
     @Override
-    public void putBatch(String tableName, List<Put> putList) {
+    public void putBatch(String tableName, List<Put> putList) throws IOException {
         Assert.notNull(putList);
         Assert.hasLength(tableName);
         // 限制最大插入数量
@@ -254,10 +259,12 @@ public class HBaseTemplate implements HBaseOperations {
             Table table = null;
             if (tableExists(tableName)) {
                 try {
+                    Connection connection = hBaseConfig.getConnection();
                     table = connection.getTable(TableName.valueOf(tableName));
                     table.put(putList);
                 } catch (IOException e) {
                     logger.error("data put error, message:{}", e.getMessage());
+                    throw new IOException(e);
                 } finally {
                     closeTable(table);
                 }
@@ -293,6 +300,7 @@ public class HBaseTemplate implements HBaseOperations {
         Assert.hasLengthBatch(tableName, rowName, familyName);
         Table table = null;
         try {
+            Connection connection = hBaseConfig.getConnection();
             table = connection.getTable(TableName.valueOf(tableName));
             Delete delete = new Delete(rowName.getBytes());
             if (qualifier != null) {
@@ -318,6 +326,7 @@ public class HBaseTemplate implements HBaseOperations {
         Assert.hasLength(tableName);
         Table table = null;
         try {
+            Connection connection = hBaseConfig.getConnection();
             table = connection.getTable(TableName.valueOf(tableName));
             table.delete(deleteList);
         } catch (IOException e) {
@@ -341,10 +350,11 @@ public class HBaseTemplate implements HBaseOperations {
         ResultScanner resultScanner = null;
         Table table = null;
         try {
+            Connection connection = hBaseConfig.getConnection();
             table = connection.getTable(TableName.valueOf(tableName));
             resultScanner = table.getScanner(scan);
         } catch (IOException e) {
-            logger.error("query error, message:", e.getMessage());
+            logger.error("query error, message:{}", e.getMessage());
         } finally {
             closeTable(table);
         }
@@ -360,6 +370,7 @@ public class HBaseTemplate implements HBaseOperations {
     public void dropTable(String tableName) {
         boolean tableExists = tableExists(tableName);
         if (tableExists) {
+            Connection connection = hBaseConfig.getConnection();
             try (Admin admin = connection.getAdmin()) {
                 admin.disableTable(TableName.valueOf(tableName));
                 admin.deleteTable(TableName.valueOf(tableName));
@@ -372,8 +383,14 @@ public class HBaseTemplate implements HBaseOperations {
         }
     }
 
+    /**
+     * 批量删除表
+     *
+     * @param tableNames
+     */
     @Override
     public void dropTable(List<String> tableNames) {
+        Connection connection = hBaseConfig.getConnection();
         try (Admin admin = connection.getAdmin()) {
             tableNames.stream().distinct().forEach(tableName -> {
                 boolean tableExists = tableExists(tableName);
@@ -393,10 +410,17 @@ public class HBaseTemplate implements HBaseOperations {
         }
     }
 
+    /**
+     * 清空表
+     *
+     * @param tableName
+     * @throws IOException
+     */
     @Override
     public void truncateTable(String tableName) throws IOException {
         boolean tableExists = tableExists(tableName);
         if (tableExists) {
+            Connection connection = hBaseConfig.getConnection();
             Admin admin = connection.getAdmin();
             admin.disableTable(TableName.valueOf(tableName));
             admin.truncateTable(TableName.valueOf(tableName), false);
@@ -406,11 +430,31 @@ public class HBaseTemplate implements HBaseOperations {
         }
     }
 
+    /**
+     * 删除某列
+     *
+     * @param tableName
+     * @param family
+     * @param rowKey
+     * @param column
+     * @return
+     * @throws IOException
+     */
     @Override
     public boolean deleteColumn(String tableName, String family, String rowKey, String column) throws IOException {
         return this.deleteColumn(tableName, family, rowKey, Arrays.asList(column));
     }
 
+    /**
+     * 删除某些列
+     *
+     * @param tableName
+     * @param family
+     * @param rowKey
+     * @param columns
+     * @return
+     * @throws IOException
+     */
     @Override
     public boolean deleteColumn(String tableName, String family, String rowKey, List<String> columns) throws IOException {
         if (StringUtils.isBlank(tableName) || StringUtils.isBlank(family) || StringUtils.isBlank(rowKey)) {
@@ -418,11 +462,12 @@ public class HBaseTemplate implements HBaseOperations {
             return false;
         }
         if (columns.isEmpty()) {
-            logger.info("colums is empty");
+            logger.info("columns is empty");
             return false;
         }
         boolean tableExists = tableExists(tableName);
         if (tableExists) {
+            Connection connection = hBaseConfig.getConnection();
             Table table = connection.getTable(TableName.valueOf(tableName));
             Delete delete = new Delete(rowKey.getBytes());
             for (String column : columns) {
@@ -435,5 +480,15 @@ public class HBaseTemplate implements HBaseOperations {
             logger.info("table {} is not exists", tableName);
             return false;
         }
+    }
+
+    /**
+     * 获取连接对象
+     *
+     * @return
+     */
+    @Override
+    public Connection getConnection() {
+        return hBaseConfig.getConnection();
     }
 }

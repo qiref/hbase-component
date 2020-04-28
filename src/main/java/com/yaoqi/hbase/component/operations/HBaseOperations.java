@@ -6,13 +6,12 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * @Author YaoQi
- * @Date 2018/8/13 14:46
- * @Modified
- * @Description 组件接口
+ * @author YaoQi
+ * Date 2018/8/13 14:46
+ * Modified
+ * Description 组件接口
  */
 public interface HBaseOperations {
-
 
     /**
      * 创建一张表
@@ -73,8 +72,9 @@ public interface HBaseOperations {
      *
      * @param tableName 表名
      * @param putList   put集合
+     * @throws IOException
      */
-    void putBatch(final String tableName, List<Put> putList);
+    void putBatch(final String tableName, List<Put> putList) throws IOException;
 
     /**
      * 删除一个列族下的数据
@@ -130,11 +130,13 @@ public interface HBaseOperations {
      * 清空表数据
      *
      * @param tableName
+     * @throws IOException
      */
     void truncateTable(String tableName) throws IOException;
 
     /**
      * 删除指定行指定列
+     *
      * @param tableName
      * @param family
      * @param rowKey
@@ -149,6 +151,17 @@ public interface HBaseOperations {
      *
      * @param tableName
      * @param family
+     * @param rowKey
+     * @param columns
+     * @return
+     * @throws IOException
      */
     boolean deleteColumn(String tableName, String family, String rowKey, List<String> columns) throws IOException;
+
+    /**
+     * 获取连接对象
+     *
+     * @return
+     */
+    Connection getConnection();
 }

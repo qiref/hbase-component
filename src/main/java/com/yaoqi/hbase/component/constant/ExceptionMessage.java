@@ -1,7 +1,7 @@
 package com.yaoqi.hbase.component.constant;
 
 /**
- * @Author YaoQi
+ * @author YaoQi
  * @Date 2018/8/13 16:52
  * @Modified
  * @Description 异常信息常量类
