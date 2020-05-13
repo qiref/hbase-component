@@ -96,7 +96,7 @@ public class HBaseTemplateTest {
      * 批量插入数据
      */
     @Test
-    public void testBatchPut() {
+    public void testBatchPut() throws IOException {
         String rowKey = String.valueOf(System.currentTimeMillis());
         Put put = new Put(rowKey.getBytes());
         String defaultColumn = "CF1";

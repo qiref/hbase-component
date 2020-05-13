@@ -59,18 +59,4 @@
         </plugins>
     </build>
 
-    <distributionManagement>
-        <repository>
-            <id>releases</id>
-            <name>Releases</name>
-            <url>http://192.168.80.244:8081/nexus/content/repositories/releases/</url>
-            <uniqueVersion>true</uniqueVersion>
-        </repository>
-        <snapshotRepository>
-            <id>deploymentRepo_snapshot</id>
-            <name>Snapshots</name>
-            <url>http://192.168.80.244:8081/nexus/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-
 </project>
