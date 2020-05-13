@@ -5,9 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * @Author YaoQi
- * @Date 2018/8/13 11:35
- * @Modified
- * @Description
+ * Date 2018/8/13 11:35
+ * Modified
+ * Description
  */
 @SpringBootApplication
 public class HBaseApp {

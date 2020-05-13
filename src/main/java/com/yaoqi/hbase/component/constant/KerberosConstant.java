@@ -1,9 +1,9 @@
 package com.yaoqi.hbase.component.constant;
 
 /**
- * @author zww
- * @date 2019 / 12 / 17 / 16: 12
- * @desc
+ * @author YaoQi
+ * date 2019 / 12 / 17 / 16: 12
+ * desc
  **/
 public class KerberosConstant {
 
